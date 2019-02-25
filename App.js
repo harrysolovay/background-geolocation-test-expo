@@ -28,12 +28,11 @@ firebase.initializeApp({
 TaskManager.defineTask('shareLocation', ({data: {locations}, error}) => {
   if (error) return
   if (locations) {
-    console.log(locations)
-    // const {uid} = firebase.auth().currentUser
-    // firebase
-    //   .database()
-    //   .ref(`users/${uid}/locations/${new Date()}`)
-    //   .set(locations)
+    const {uid} = firebase.auth().currentUser
+    firebase
+      .database()
+      .ref(`users/${uid}/locations/${new Date()}`)
+      .set(locations)
   }
 })
 
@@ -161,6 +160,7 @@ export default class App extends Component {
               console.error(error)
             }
           })
+        this.startTracking()
       }
 
       if (maybeUId) {
@@ -190,10 +190,9 @@ export default class App extends Component {
   }
 
   startTracking = async () => {
-    this.state.grantedPermissions &&
-      (await Location.startLocationUpdatesAsync('shareLocation', {
-        accuracy: Location.Accuracy.Highest,
-      }))
+    await Location.startLocationUpdatesAsync('shareLocation', {
+      accuracy: Location.Accuracy.Highest,
+    })
   }
 
   grantPermissions = async () => {
